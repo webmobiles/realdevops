@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-virtual-servers
+data:
+  default.conf: |
+    {{- include "mychart.virtualserver"  (dict "root" . "subdomain" "peleadmin") | nindent 4 }}
+    {{- include "mychart.virtualserver"  (dict "root" . "subdomain" "voyages") | nindent 4 }}
+    {{- include "mychart.virtualserver"  (dict "root" . "subdomain" "master") | nindent 4 }}
