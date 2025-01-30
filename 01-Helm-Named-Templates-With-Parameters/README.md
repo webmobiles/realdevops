@@ -1,6 +1,9 @@
 #  01-Helm-Named-Templates-With-Parameters
 ## Real devops with real apps
 
+Video: 
+https://www.youtube.com/watch?v=-Fcmo0o3Tkw
+
 
 If you're passing a dictionary as a parameter to a named template, the template loses access to the parent context (e.g., .Values, .Release, etc.) unless explicitly passed or preserved.
 
