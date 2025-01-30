@@ -1,0 +1,62 @@
+#
+# Ingress resolve the frontend domains that enter in this nginx
+#
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pelefrontend
+  labels:
+    app: pelefrontend
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+       app: pelefrontend
+  template:
+    metadata:
+      annotations:
+        {{- with .Values.pods.annotations }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- with .Values.pods.labels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+        app: pelefrontend
+    spec:
+      imagePullSecrets:
+        - name: mobilsem-credential
+      volumes:
+        - name: certificates-volume
+          secret:
+            secretName: peletls
+            items:
+              - key: tls.crt
+                path: fullchain.cer
+              - key: tls.key
+                path: cert.key
+        - name: nginx-virtual-servers-volume
+          configMap:
+            name: nginx-virtual-servers  
+      containers:
+        - name: pelefrontend
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.path }}{{ .Values.image.pelefrontend.repo }}:{{ .Values.image.pelefrontend.tag}}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+          ports:
+            - name: https
+              containerPort: 443
+              protocol: TCP
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - name: certificates-volume
+              mountPath: /etc/ssl/certs/
+            - name: nginx-virtual-servers-volume
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf  
