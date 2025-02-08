@@ -1,0 +1,6 @@
+# Default values for mychart.
+
+replicaCount: 1
+
+# This sets the main domain
+domain: mydomain.com 

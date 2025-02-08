@@ -1,0 +1,9 @@
+services:
+  acme:
+    image: acme
+    build: .
+    volumes:
+      - ./acme:/opt/acme
+      - ./mycertificates:/etc/mycertificates
+    env_file:
+      - env-zero

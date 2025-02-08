@@ -1,0 +1,72 @@
+networks:
+  gitlabnet:
+    ipam:
+      config:
+        - subnet: 192.168.193.0/24
+services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner:alpine3.18-bleeding
+    restart: unless-stopped
+    networks:
+      gitlabnet:
+        ipv4_address: 192.168.193.6
+    env_file:
+      - .env
+    volumes:
+      - '/var/run/docker.sock:/var/run/docker.sock'
+      - '${MY_GIT_RUNNER_HOME_IN_HOST}:/home/gitlab-runner'
+      - '${MY_GIT_RUNNER_CONFIG_IN_HOST}:/etc/gitlab-runner'
+      - '${MY_SSH_FOLDER_IN_HOST}:${MY_SSH_FOLDER_IN_CONTAINER}'
+    depends_on:
+      gitlab:
+        condition: service_healthy
+
+  gitlab:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    container_name: gitlab
+    hostname: 'gitlab'
+    networks:
+      gitlabnet:
+        ipv4_address: 192.168.193.5
+    env_file:
+      - .env
+    environment:
+      GITLAB_OMNIBUS_CONFIG: |
+        external_url 'https://${MY_GIT_DOMAIN}'
+        gitlab_rails['gitlab_shell_ssh_port'] = ${MY_PORT_SSH}
+        nginx['ssl_certificate'] = "${MY_CERTIFICATE_CER}"
+        nginx['ssl_certificate_key'] = "${MY_CERTIFICATE_KEY}"
+        nginx['client_max_body_size'] = '20250m'
+        #https://docs.gitlab.com/ee/administration/operations/puma.html
+        #puma['worker_processes'] = 0
+        prometheus_monitoring['enable'] = false
+        letsencrypt['enable'] = false
+        registry['enable'] = true
+        registry_external_url 'https://${MY_CONTAINER_REGISTRY_DOMAIN}'
+        registry_nginx['ssl_certificate'] = "${MY_CERTIFICATE_CER}"
+        registry_nginx['ssl_certificate_key'] = "${MY_CERTIFICATE_KEY}"
+        nginx['redirect_http_to_https'] = false
+        nginx['access_log_enabled'] = false
+        gitlab_rails['gitlab_kas_enabled'] = false
+        gitlab_kas['enable'] = false
+        #gitlab_rails['gitlab_kas_external_url'] = 'wss://${MY_GIT_DOMAIN}/-/kubernetes-agent/'
+        #gitlab_rails['gitlab_kas_internal_url'] = 'grpc://localhost:8153'
+        #gitlab_kas_external_url "wss://${MY_GIT_DOMAIN}/-/kubernetes-agent/"
+    ports:
+      - '${MY_PORT_HTTPS}:443' 
+      # ssh (for git clone, etc)
+      - target: 22
+        published: ${MY_PORT_SSH}
+        protocol: tcp
+        mode: host
+      # for kas
+      - '${MY_PORT_KAS}:8150'  
+    volumes:
+      - '${MY_GIT_ETC_GITLAB_FOLDER_IN_HOST}:${MY_GIT_ETC_GITLAB_FOLDER_IN_CONTAINER}'
+      - '${MY_GIT_LOG_FOLDER_IN_HOST}:/var/log/gitlab'
+      - '${MY_GIT_OPT_FOR_DATA_FOLDER_IN_HOST}:/var/opt/gitlab'
+      - '${MY_SSH_FOLDER_IN_HOST}:${MY_SSH_FOLDER_IN_CONTAINER}'
+    shm_size: '1256m'

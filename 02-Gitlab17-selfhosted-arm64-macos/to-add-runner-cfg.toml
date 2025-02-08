@@ -1,0 +1,6 @@
+
+## Add this block to ./target-container/runner-config/config.toml
+## And restart the runner container
+  [runners.tls]
+    cert_file = "/etc/gitlab/ssl/homelab.CHANGE_TO_YOUR_DOMAIN.com.key"
+    key_file = "/etc/gitlab/ssl/fullchain.cer"

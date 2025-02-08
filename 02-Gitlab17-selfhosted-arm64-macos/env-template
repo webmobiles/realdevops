@@ -1,0 +1,23 @@
+# Important to change your domain:
+MY_MAIN_DOMAIN=homelab.CHANGE_TO_YOUR_DOMAIN.com
+# Important to adjunst your certificates files names:
+MY_CERTIFICATE_CER=${MY_SSH_FOLDER_IN_CONTAINER}/fullchain.cer
+MY_CERTIFICATE_KEY=${MY_SSH_FOLDER_IN_CONTAINER}/${MY_MAIN_DOMAIN}.key
+# Ports on your local computer (forwarded from your internet router) 
+MY_PORT_HTTPS=8043
+MY_PORT_SSH=8022
+MY_PORT_KAS=8050
+# default subdomains for gitlab and the docker registry or container registry:
+MY_GIT_DOMAIN=git.${MY_MAIN_DOMAIN}
+MY_CONTAINER_REGISTRY_DOMAIN=rg.${MY_MAIN_DOMAIN}
+# default folders dont need really changes
+MY_GIT_FOLDER_IN_HOST=${PWD}/target-container
+MY_GIT_ETC_GITLAB_FOLDER_IN_HOST=${MY_GIT_FOLDER_IN_HOST}/etc/gitlab
+MY_GIT_ETC_GITLAB_FOLDER_IN_CONTAINER=/etc/gitlab
+MY_GIT_LOG_FOLDER_IN_HOST=${MY_GIT_FOLDER_IN_HOST}/logs
+MY_GIT_OPT_FOR_DATA_FOLDER_IN_HOST=${MY_GIT_FOLDER_IN_HOST}/data
+MY_GIT_RUNNER_HOME_IN_HOST=${MY_GIT_FOLDER_IN_HOST}/runner-home
+MY_GIT_RUNNER_CONFIG_IN_HOST=${MY_GIT_FOLDER_IN_HOST}/runner-config
+MY_SSH_FOLDER_IN_HOST=./ssl
+MY_SSH_FOLDER_IN_CONTAINER=/etc/gitlab/ssl
+
