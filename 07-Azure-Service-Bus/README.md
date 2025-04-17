@@ -13,6 +13,12 @@
           - Standard  (allow queues & topics)
           - Basic (only allow queues)
 
+    - Create Namespace
+
+    Inside Namespace
+      + Queue (Add)
+      + Topic (Add)
+          +  Subscription (Add)  <- Important to have at least one subscription
 
   #### Access (needed for every queue or topic created):
 
