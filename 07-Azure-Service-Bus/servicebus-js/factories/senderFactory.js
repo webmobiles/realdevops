@@ -8,9 +8,6 @@ class senderFactory {
     const credential = new DefaultAzureCredential();
     return new senderAdapter(`${namespace}.servicebus.windows.net`, credential);
   }
-  getfullyQualifiedNamespace = () => {
-    
-  }
 }
 
 module.exports = senderFactory;
