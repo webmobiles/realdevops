@@ -2,8 +2,35 @@
 
 ### Real Devops with Dave
 
+## 1. Add Bus Services on Azure Portal
 
-## using JS to send and receive messages
+  #### Create Namespace 
+
+    - Search 'service bus' on azure portal
+    - Click on add
+    - Fill the form:
+      - field 'Pricing tier': 
+          - Standard  (allow queues & topics)
+          - Basic (only allow queues)
+
+
+  #### Access (needed for every queue or topic created):
+
+      -> Access Control (IAM)
+      + Add ( - Add Role assignement): "Azure Service Bus Data Owner"
+
+        search: Azure Service Bus Data Owner 
+            -> Clic to select (gray mode)
+
+        go Members (tab) -> 
+              Assign access to:
+                (x) User, group, or service principal
+
+              + Select members
+                .. search users...
+
+
+## 2. Using JS to send and receive messages
 
 
 
@@ -57,6 +84,22 @@
       ```
       node receiverFromTopic.js
       ```
+
+### Objects & Methods:
+   
+>   ```
+>	  ServiceBusClient Obj <-- @azure/service-bus
+>			 .createReceiver ( topicName, subscriptionName) <-- for receiver
+>			 	.subscribe ( messageHandler, errorHandler) <-- listen mod
+>			 		.close()
+>			 	.close()
+>			 .createSender( topicName)	<-- for sender
+>			 	.createMessageBatch(batch)   <-- add message to batch
+>			 	.sendMessages(batch) <-- sent all the messages from batch 
+>			 	.close()
+>			 .close()
+>
+>    ```
 
 ## Concepts AMQP (RabbitMQ) vs Azure Service Bus
 | AMQP Concept      | Azure Service Bus Equivalent        | Description                                              |
