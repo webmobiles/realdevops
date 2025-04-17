@@ -12,8 +12,7 @@
       - field 'Pricing tier': 
           - Standard  (allow queues & topics)
           - Basic (only allow queues)
-
-    - Create Namespace
+    
 
     Inside Namespace
       + Queue (Add)
@@ -96,7 +95,7 @@
 >   ```
 >	  ServiceBusClient Obj <-- @azure/service-bus
 >			 .createReceiver ( topicName, subscriptionName) <-- for receiver
->			 	.subscribe ( messageHandler, errorHandler) <-- listen mod
+>			 	.subscribe ( messageHandler, errorHandler) <-- listen mode
 >			 		.close()
 >			 	.close()
 >			 .createSender( topicName)	<-- for sender
